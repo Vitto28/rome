@@ -40,139 +40,29 @@ public class XmlFixerReader extends Reader {
     private int bufferPos;
     private int state = 0;
 
+    public void bufferAppend(Character c) {
+        buffer.append(c);
+    }
+
+    public void setBufferLen(int len) {
+        buffer.setLength(len);
+    }
+
+    public void setBufferPos(int pos) {
+        bufferPos = pos;
+    }
+
+    public void setState(int state) {
+        this.state = state;
+    }
+
     private boolean trimStream() throws IOException {
-        boolean hasContent = true;
-        int state = 0;
-        boolean loop;
         int c;
+        StreamState streamState = new StreamStateZero(false, true, this);
         do {
-            switch (state) {
-                case 0:
-                    c = in.read();
-                    if (c == -1) {
-                        loop = false;
-                        hasContent = false;
-                    } else if (c == ' ' || c == '\n' || c == '\r' || c == '\t') {
-                        loop = true;
-                    } else if (c == '<') {
-                        state = 1;
-                        buffer.setLength(0);
-                        bufferPos = 0;
-                        buffer.append((char) c);
-                        loop = true;
-                    } else {
-                        buffer.setLength(0);
-                        bufferPos = 0;
-                        buffer.append((char) c);
-                        loop = false;
-                        hasContent = true;
-                        this.state = 3;
-                    }
-                    break;
-                case 1:
-                    c = in.read();
-                    if (c == -1) {
-                        loop = false;
-                        hasContent = true;
-                        this.state = 3;
-                    } else if (c != '!') {
-                        buffer.append((char) c);
-                        this.state = 3;
-                        loop = false;
-                        hasContent = true;
-                        this.state = 3;
-                    } else {
-                        buffer.append((char) c);
-                        state = 2;
-                        loop = true;
-                    }
-                    break;
-                case 2:
-                    c = in.read();
-                    if (c == -1) {
-                        loop = false;
-                        hasContent = true;
-                        this.state = 3;
-                    } else if (c == '-') {
-                        buffer.append((char) c);
-                        state = 3;
-                        loop = true;
-                    } else {
-                        buffer.append((char) c);
-                        loop = false;
-                        hasContent = true;
-                        this.state = 3;
-                    }
-                    break;
-                case 3:
-                    c = in.read();
-                    if (c == -1) {
-                        loop = false;
-                        hasContent = true;
-                        this.state = 3;
-                    } else if (c == '-') {
-                        buffer.append((char) c);
-                        state = 4;
-                        loop = true;
-                    } else {
-                        buffer.append((char) c);
-                        loop = false;
-                        hasContent = true;
-                        this.state = 3;
-                    }
-                    break;
-                case 4:
-                    c = in.read();
-                    if (c == -1) {
-                        loop = false;
-                        hasContent = true;
-                        this.state = 3;
-                    } else if (c != '-') {
-                        buffer.append((char) c);
-                        loop = true;
-                    } else {
-                        buffer.append((char) c);
-                        state = 5;
-                        loop = true;
-                    }
-                    break;
-                case 5:
-                    c = in.read();
-                    if (c == -1) {
-                        loop = false;
-                        hasContent = true;
-                        this.state = 3;
-                    } else if (c != '-') {
-                        buffer.append((char) c);
-                        loop = true;
-                        state = 4;
-                    } else {
-                        buffer.append((char) c);
-                        state = 6;
-                        loop = true;
-                    }
-                    break;
-                case 6:
-                    c = in.read();
-                    if (c == -1) {
-                        loop = false;
-                        hasContent = true;
-                        this.state = 3;
-                    } else if (c != '>') {
-                        buffer.append((char) c);
-                        loop = true;
-                        state = 4;
-                    } else {
-                        buffer.setLength(0);
-                        state = 0;
-                        loop = true;
-                    }
-                    break;
-                default:
-                    throw new IOException("It shouldn't happen");
-            }
-        } while (loop);
-        return hasContent;
+            streamState = streamState.handleState(in.read());
+        } while (streamState.loop);
+        return streamState.hasContent;
     }
 
     @Override
