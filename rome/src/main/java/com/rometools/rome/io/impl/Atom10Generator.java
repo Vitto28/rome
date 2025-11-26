@@ -47,87 +47,87 @@ import com.rometools.utils.Lists;
  * Feed Generator for Atom
  * <p/>
  */
-public class Atom10Generator extends BaseWireFeedGenerator {
+public class Atom10Generator extends AtomGenerator {
 
     private static final String ATOM_10_URI = "http://www.w3.org/2005/Atom";
     private static final Namespace ATOM_NS = Namespace.getNamespace(ATOM_10_URI);
 
-    private final String version;
+//    private final String version;
 
     public Atom10Generator() {
         this("atom_1.0", "1.0");
     }
 
     protected Atom10Generator(final String type, final String version) {
-        super(type);
-        this.version = version;
+        super(type, version);
+        // this.version = version;
     }
 
-    protected String getVersion() {
-        return version;
-    }
+    // protected String version() {
+    //     return version;
+    // }
 
-    protected Namespace getFeedNamespace() {
+    @Override
+    protected Namespace feedNamespace() {
         return ATOM_NS;
     }
 
-    @Override
-    public Document generate(final WireFeed wFeed) throws FeedException {
-        final Feed feed = (Feed) wFeed;
-        final Element root = createRootElement(feed);
-        populateFeed(feed, root);
-        purgeUnusedNamespaceDeclarations(root);
-        return createDocument(root);
-    }
+    // @Override
+    // public Document generate(final WireFeed wFeed) throws FeedException {
+    //     final Feed feed = (Feed) wFeed;
+    //     final Element root = createRootElement(feed);
+    //     populateFeed(feed, root);
+    //     purgeUnusedNamespaceDeclarations(root);
+    //     return createDocument(root);
+    // }
 
-    protected Document createDocument(final Element root) {
-        return new Document(root);
-    }
+    // protected Document createDocument(final Element root) {
+    //     return new Document(root);
+    // }
 
-    protected Element createRootElement(final Feed feed) {
+    // protected Element createRootElement(final Feed feed) {
+    //     final Element root = new Element("feed", feedNamespace());
+    //     root.addNamespaceDeclaration(feedNamespace());
+    //     final String xmlBase = feed.getXmlBase();
+    //     if (xmlBase != null) {
+    //         root.setAttribute("base", xmlBase, Namespace.XML_NAMESPACE);
+    //     }
+    //     generateModuleNamespaceDefs(root);
+    //     return root;
 
-        final Element root = new Element("feed", getFeedNamespace());
+    // }
 
-        root.addNamespaceDeclaration(getFeedNamespace());
-
-        // Attribute version = new Attribute("version", getVersion());
-        // root.setAttribute(version);
-
+    protected void createRootElementHelper(final Feed feed, final Element root) {
         final String xmlBase = feed.getXmlBase();
         if (xmlBase != null) {
             root.setAttribute("base", xmlBase, Namespace.XML_NAMESPACE);
         }
-
-        generateModuleNamespaceDefs(root);
-
-        return root;
-
     }
 
-    protected void populateFeed(final Feed feed, final Element parent) throws FeedException {
-        addFeed(feed, parent);
-        addEntries(feed, parent);
-    }
+    // protected void populateFeed(final Feed feed, final Element parent) throws FeedException {
+    //     addFeed(feed, parent);
+    //     addEntries(feed, parent);
+    // }
 
-    protected void addFeed(final Feed feed, final Element parent) throws FeedException {
-        final Element eFeed = parent;
-        populateFeedHeader(feed, eFeed);
+    @Override
+    protected void addFeedHelper(final Feed feed, final Element eFeed) throws FeedException {
         generateForeignMarkup(eFeed, feed.getForeignMarkup());
         checkFeedHeaderConstraints(eFeed);
         generateFeedModules(feed.getModules(), eFeed);
     }
 
-    protected void addEntries(final Feed feed, final Element parent) throws FeedException {
-        final List<Entry> items = feed.getEntries();
-        for (final Entry entry : items) {
-            addEntry(entry, parent);
-        }
-        checkEntriesConstraints(parent);
-    }
+    // protected void addEntries(final Feed feed, final Element parent) throws FeedException {
+    //     final List<Entry> items = feed.getEntries();
+    //     for (final Entry entry : items) {
+    //         addEntry(entry, parent);
+    //     }
+    //     checkEntriesConstraints(parent);
+    // }
 
-    protected void addEntry(final Entry entry, final Element parent) throws FeedException {
+    @Override
+    protected void addEntryHelper(final Entry entry, final Element eEntry) throws FeedException {
 
-        final Element eEntry = new Element("entry", getFeedNamespace());
+        // final Element eEntry = new Element("entry", feedNamespace());
 
         final String xmlBase = entry.getXmlBase();
         if (xmlBase != null) {
@@ -136,34 +136,14 @@ public class Atom10Generator extends BaseWireFeedGenerator {
 
         populateEntry(entry, eEntry);
         generateForeignMarkup(eEntry, entry.getForeignMarkup());
-        checkEntryConstraints(eEntry);
-        generateItemModules(entry.getModules(), eEntry);
-        parent.addContent(eEntry);
+        // checkEntryConstraints(eEntry);
+        // generateItemModules(entry.getModules(), eEntry);
+        // parent.addContent(eEntry);
 
     }
 
-    protected void populateFeedHeader(final Feed feed, final Element eFeed) throws FeedException {
-
-        final Content titleEx = feed.getTitleEx();
-        if (titleEx != null) {
-            final Element titleElement = new Element("title", getFeedNamespace());
-            fillContentElement(titleElement, titleEx);
-            eFeed.addContent(titleElement);
-        }
-
-        final List<Link> alternateLinks = feed.getAlternateLinks();
-        if (alternateLinks != null) {
-            for (final Link link : alternateLinks) {
-                eFeed.addContent(generateLinkElement(link));
-            }
-        }
-
-        final List<Link> otherLinks = feed.getOtherLinks();
-        if (otherLinks != null) {
-            for (final Link link : otherLinks) {
-                eFeed.addContent(generateLinkElement(link));
-            }
-        }
+    @Override
+    protected void populateFeedHeaderHelper(final Feed feed, final Element eFeed) throws FeedException {
 
         final List<Category> cats = feed.getCategories();
         if (cats != null) {
@@ -175,7 +155,7 @@ public class Atom10Generator extends BaseWireFeedGenerator {
         final List<SyndPerson> authors = feed.getAuthors();
         if (Lists.isNotEmpty(authors)) {
             for (final SyndPerson author : authors) {
-                final Element authorElement = new Element("author", getFeedNamespace());
+                final Element authorElement = new Element("author", feedNamespace());
                 fillPersonElement(authorElement, author);
                 eFeed.addContent(authorElement);
             }
@@ -184,28 +164,14 @@ public class Atom10Generator extends BaseWireFeedGenerator {
         final List<SyndPerson> contributors = feed.getContributors();
         if (Lists.isNotEmpty(contributors)) {
             for (final SyndPerson contributor : contributors) {
-                final Element contributorElement = new Element("contributor", getFeedNamespace());
-                fillPersonElement(contributorElement, contributor);
-                eFeed.addContent(contributorElement);
+                addContributorToFeed(eFeed, contributor);
             }
         }
+        addElementToFeed(feed, eFeed, "subtitle");
 
-        final Content subtitle = feed.getSubtitle();
-        if (subtitle != null) {
-            final Element subtitleElement = new Element("subtitle", getFeedNamespace());
-            fillContentElement(subtitleElement, subtitle);
-            eFeed.addContent(subtitleElement);
-        }
+        setFeedId(feed, eFeed);
 
-        final String id = feed.getId();
-        if (id != null) {
-            eFeed.addContent(generateSimpleElement("id", id));
-        }
-
-        final Generator generator = feed.getGenerator();
-        if (generator != null) {
-            eFeed.addContent(generateGeneratorElement(generator));
-        }
+        setFeedGenerator(feed, eFeed);
 
         final String rights = feed.getRights();
         if (rights != null) {
@@ -222,12 +188,7 @@ public class Atom10Generator extends BaseWireFeedGenerator {
             eFeed.addContent(generateSimpleElement("logo", logo));
         }
 
-        final Date updated = feed.getUpdated();
-        if (updated != null) {
-            final Element updatedElement = new Element("updated", getFeedNamespace());
-            updatedElement.addContent(DateParser.formatW3CDateTime(updated, Locale.US));
-            eFeed.addContent(updatedElement);
-        }
+        setFeedDate(feed, eFeed, "updated");
 
     }
 
@@ -235,7 +196,7 @@ public class Atom10Generator extends BaseWireFeedGenerator {
 
         final Content titleEx = entry.getTitleEx();
         if (titleEx != null) {
-            final Element titleElement = new Element("title", getFeedNamespace());
+            final Element titleElement = new Element("title", feedNamespace());
             fillContentElement(titleElement, titleEx);
             eEntry.addContent(titleElement);
         }
@@ -264,7 +225,7 @@ public class Atom10Generator extends BaseWireFeedGenerator {
         final List<SyndPerson> authors = entry.getAuthors();
         if (Lists.isNotEmpty(authors)) {
             for (final SyndPerson author : authors) {
-                final Element authorElement = new Element("author", getFeedNamespace());
+                final Element authorElement = new Element("author", feedNamespace());
                 fillPersonElement(authorElement, author);
                 eEntry.addContent(authorElement);
             }
@@ -273,7 +234,7 @@ public class Atom10Generator extends BaseWireFeedGenerator {
         final List<SyndPerson> contributors = entry.getContributors();
         if (Lists.isNotEmpty(contributors)) {
             for (final SyndPerson contributor : contributors) {
-                final Element contributorElement = new Element("contributor", getFeedNamespace());
+                final Element contributorElement = new Element("contributor", feedNamespace());
                 fillPersonElement(contributorElement, contributor);
                 eEntry.addContent(contributorElement);
             }
@@ -286,21 +247,21 @@ public class Atom10Generator extends BaseWireFeedGenerator {
 
         final Date updated = entry.getUpdated();
         if (updated != null) {
-            final Element updatedElement = new Element("updated", getFeedNamespace());
+            final Element updatedElement = new Element("updated", feedNamespace());
             updatedElement.addContent(DateParser.formatW3CDateTime(updated, Locale.US));
             eEntry.addContent(updatedElement);
         }
 
         final Date published = entry.getPublished();
         if (published != null) {
-            final Element publishedElement = new Element("published", getFeedNamespace());
+            final Element publishedElement = new Element("published", feedNamespace());
             publishedElement.addContent(DateParser.formatW3CDateTime(published, Locale.US));
             eEntry.addContent(publishedElement);
         }
 
         final List<Content> contents = entry.getContents();
         if (Lists.isNotEmpty(contents)) {
-            final Element contentElement = new Element("content", getFeedNamespace());
+            final Element contentElement = new Element("content", feedNamespace());
             final Content content = contents.get(0);
             fillContentElement(contentElement, content);
             eEntry.addContent(contentElement);
@@ -308,14 +269,14 @@ public class Atom10Generator extends BaseWireFeedGenerator {
 
         final Content summary = entry.getSummary();
         if (summary != null) {
-            final Element summaryElement = new Element("summary", getFeedNamespace());
+            final Element summaryElement = new Element("summary", feedNamespace());
             fillContentElement(summaryElement, summary);
             eEntry.addContent(summaryElement);
         }
 
         final Feed source = entry.getSource();
         if (source != null) {
-            final Element sourceElement = new Element("source", getFeedNamespace());
+            final Element sourceElement = new Element("source", feedNamespace());
             populateFeedHeader(source, sourceElement);
             eEntry.addContent(sourceElement);
         }
@@ -327,18 +288,9 @@ public class Atom10Generator extends BaseWireFeedGenerator {
 
     }
 
-    protected void checkFeedHeaderConstraints(final Element eFeed) throws FeedException {
-    }
-
-    protected void checkEntriesConstraints(final Element parent) throws FeedException {
-    }
-
-    protected void checkEntryConstraints(final Element eEntry) throws FeedException {
-    }
-
     protected Element generateCategoryElement(final Category cat) {
 
-        final Namespace namespace = getFeedNamespace();
+        final Namespace namespace = feedNamespace();
         final Element catElement = new Element("category", namespace);
 
         final String term = cat.getTerm();
@@ -363,29 +315,8 @@ public class Atom10Generator extends BaseWireFeedGenerator {
 
     }
 
-    protected Element generateLinkElement(final Link link) {
-
-        final Namespace namespace = getFeedNamespace();
-        final Element linkElement = new Element("link", namespace);
-
-        final String rel = link.getRel();
-        if (rel != null) {
-            final Attribute relAttribute = new Attribute("rel", rel);
-            linkElement.setAttribute(relAttribute);
-        }
-
-        final String type = link.getType();
-        if (type != null) {
-            final Attribute typeAttribute = new Attribute("type", type);
-            linkElement.setAttribute(typeAttribute);
-        }
-
-        final String href = link.getHref();
-        if (href != null) {
-            final Attribute hrefAttribute = new Attribute("href", href);
-            linkElement.setAttribute(hrefAttribute);
-        }
-
+    @Override
+    protected void generateLinkElementHelper(final Link link, final Element linkElement) {
         final String hreflang = link.getHreflang();
         if (hreflang != null) {
             final Attribute hreflangAttribute = new Attribute("hreflang", hreflang);
@@ -403,26 +334,25 @@ public class Atom10Generator extends BaseWireFeedGenerator {
             linkElement.setAttribute(lenght);
         }
 
-        return linkElement;
-
     }
 
-    protected void fillPersonElement(final Element element, final SyndPerson person) {
+    @Override
+    protected void fillPersonElementHelper(final Element element, final SyndPerson person) {
 
-        final String name = person.getName();
-        if (name != null) {
-            element.addContent(generateSimpleElement("name", name));
-        }
+        // final String name = person.getName();
+        // if (name != null) {
+        //     element.addContent(generateSimpleElement("name", name));
+        // }
 
-        final String uri = person.getUri();
-        if (uri != null) {
-            element.addContent(generateSimpleElement("uri", uri));
-        }
+        // final String uri = person.getUri();
+        // if (uri != null) {
+        //     element.addContent(generateSimpleElement("uri", uri));
+        // }
 
-        final String email = person.getEmail();
-        if (email != null) {
-            element.addContent(generateSimpleElement("email", email));
-        }
+        // final String email = person.getEmail();
+        // if (email != null) {
+        //     element.addContent(generateSimpleElement("email", email));
+        // }
 
         generatePersonModules(person.getModules(), element);
 
@@ -430,7 +360,7 @@ public class Atom10Generator extends BaseWireFeedGenerator {
 
     protected Element generateTagLineElement(final Content tagline) {
 
-        final Element taglineElement = new Element("subtitle", getFeedNamespace());
+        final Element taglineElement = new Element("subtitle", feedNamespace());
 
         final String type = tagline.getType();
         if (type != null) {
@@ -447,6 +377,7 @@ public class Atom10Generator extends BaseWireFeedGenerator {
 
     }
 
+    @Override
     protected void fillContentElement(final Element contentElement, final Content content) throws FeedException {
 
         final String type = content.getType();
@@ -502,37 +433,6 @@ public class Atom10Generator extends BaseWireFeedGenerator {
             }
 
         }
-    }
-
-    protected Element generateGeneratorElement(final Generator generator) {
-
-        final Element generatorElement = new Element("generator", getFeedNamespace());
-
-        final String url = generator.getUrl();
-        if (url != null) {
-            final Attribute urlAttribute = new Attribute("uri", url);
-            generatorElement.setAttribute(urlAttribute);
-        }
-
-        final String version2 = generator.getVersion();
-        if (version2 != null) {
-            final Attribute versionAttribute = new Attribute("version", version2);
-            generatorElement.setAttribute(versionAttribute);
-        }
-
-        final String value = generator.getValue();
-        if (value != null) {
-            generatorElement.addContent(value);
-        }
-
-        return generatorElement;
-
-    }
-
-    protected Element generateSimpleElement(final String name, final String value) {
-        final Element element = new Element(name, getFeedNamespace());
-        element.addContent(value);
-        return element;
     }
 
     /**
