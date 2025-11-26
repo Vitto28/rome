@@ -123,7 +123,7 @@ public class Atom10Parser extends AtomParser {
         }
 
         final List<Element> links = eFeed.getChildren("link", getAtomNamespace());
-        feed.setAlternateLinks(parseAlternateLinks(feed, null, baseURI, links));
+        feed.setAlternateLinks(parseAlternateLinks(baseURI, links));
         feed.setOtherLinks(parseOtherLinks(feed, null, baseURI, links));
 
         final List<Element> categories = eFeed.getChildren("category", getAtomNamespace());
@@ -226,7 +226,7 @@ public class Atom10Parser extends AtomParser {
     }
 
     // List(Elements) -> List(Link)
-    private List<Link> parseAlternateLinks(final Feed feed, final Entry entry, final String baseURI, final List<Element> eLinks) {
+    private List<Link> parseAlternateLinks(final String baseURI, final List<Element> eLinks) {
 
         final List<Link> links = new ArrayList<Link>();
         for (final Element eLink : eLinks) {
@@ -367,7 +367,7 @@ public class Atom10Parser extends AtomParser {
         }
 
         final List<Element> links = eEntry.getChildren("link", getAtomNamespace());
-        entry.setAlternateLinks(parseAlternateLinks(feed, entry, baseURI, links));
+        entry.setAlternateLinks(parseAlternateLinks(baseURI, links));
         entry.setOtherLinks(parseOtherLinks(feed, entry, baseURI, links));
 
         final List<Element> authors = eEntry.getChildren("author", getAtomNamespace());
