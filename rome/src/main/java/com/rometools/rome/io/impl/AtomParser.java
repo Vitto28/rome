@@ -1,12 +1,13 @@
-package main.java.com.rometools.rome.io.impl;
+package com.rometools.rome.io.impl;
 
 import java.util.Locale;
 
-import javax.xml.stream.events.Namespace;
+import org.jdom2.Document;
+import org.jdom2.Element;
+import org.jdom2.Namespace;
 
 import com.rometools.rome.feed.WireFeed;
 import com.rometools.rome.io.FeedException;
-import com.rometools.rome.io.impl.BaseWireFeedParser;
 
 public abstract class AtomParser extends BaseWireFeedParser {
     protected AtomParser(final String type, final Namespace namespace) {
@@ -34,4 +35,8 @@ public abstract class AtomParser extends BaseWireFeedParser {
         // one posibility would be to produce an ouput and attempt to parse it again with validation
         // turned on. otherwise will have to check the document elements by hand.
     }
+
+    protected abstract Namespace getAtomNamespace();
+
+    protected abstract WireFeed parseFeed(Element eFeed, Locale locale) throws FeedException;
 }

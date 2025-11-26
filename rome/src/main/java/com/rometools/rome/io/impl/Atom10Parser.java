@@ -74,6 +74,7 @@ public class Atom10Parser extends AtomParser {
         super(type, ATOM_10_NS);
     }
 
+    @Override
     protected Namespace getAtomNamespace() {
         return ATOM_10_NS;
     }
@@ -100,6 +101,7 @@ public class Atom10Parser extends AtomParser {
     //     // turned on. otherwise will have to check the document elements by hand.
     // }
 
+    @Override
     protected WireFeed parseFeed(final Element eFeed, final Locale locale) throws FeedException {
 
         String baseURI = null;

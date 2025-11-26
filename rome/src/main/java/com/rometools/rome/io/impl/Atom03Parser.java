@@ -33,7 +33,6 @@ import com.rometools.rome.feed.atom.Generator;
 import com.rometools.rome.feed.atom.Link;
 import com.rometools.rome.feed.atom.Person;
 import com.rometools.rome.feed.synd.SyndPerson;
-import com.rometools.rome.io.FeedException;
 import com.rometools.utils.Lists;
 
 // public class Atom03Parser extends BaseWireFeedParser {
@@ -50,6 +49,7 @@ public class Atom03Parser extends AtomParser {
         super(type, ns);
     }
 
+    @Override
     protected Namespace getAtomNamespace() {
         return ATOM_03_NS;
     }
@@ -80,6 +80,7 @@ public class Atom03Parser extends AtomParser {
     //     // turned on. otherwise will have to check the document elements by hand.
     // }
 
+    @Override
     protected WireFeed parseFeed(final Element eFeed, final Locale locale) {
 
         final String type = getType();
