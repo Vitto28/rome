@@ -50,7 +50,8 @@ import com.rometools.utils.Lists;
 /**
  * Parser for Atom 1.0
  */
-public class Atom10Parser extends BaseWireFeedParser {
+// public class Atom10Parser extends BaseWireFeedParser {
+public class Atom10Parser extends AtomParser {
 
     private static final String ATOM_10_URI = "http://www.w3.org/2005/Atom";
     private static final Namespace ATOM_10_NS = Namespace.getNamespace(ATOM_10_URI);
@@ -77,27 +78,27 @@ public class Atom10Parser extends BaseWireFeedParser {
         return ATOM_10_NS;
     }
 
-    @Override
-    public boolean isMyType(final Document document) {
-        final Element rssRoot = document.getRootElement();
-        final Namespace defaultNS = rssRoot.getNamespace();
-        return defaultNS != null && defaultNS.equals(getAtomNamespace());
-    }
+    // @Override
+    // public boolean isMyType(final Document document) {
+    //     final Element rssRoot = document.getRootElement();
+    //     final Namespace defaultNS = rssRoot.getNamespace();
+    //     return defaultNS != null && defaultNS.equals(getAtomNamespace());
+    // }
 
-    @Override
-    public WireFeed parse(final Document document, final boolean validate, final Locale locale) throws IllegalArgumentException, FeedException {
-        if (validate) {
-            validateFeed(document);
-        }
-        final Element rssRoot = document.getRootElement();
-        return parseFeed(rssRoot, locale);
-    }
+    // @Override
+    // public WireFeed parse(final Document document, final boolean validate, final Locale locale) throws IllegalArgumentException, FeedException {
+    //     if (validate) {
+    //         validateFeed(document);
+    //     }
+    //     final Element rssRoot = document.getRootElement();
+    //     return parseFeed(rssRoot, locale);
+    // }
 
-    protected void validateFeed(final Document document) throws FeedException {
-        // TBD here we have to validate the Feed against a schema or whatever not sure how to do it
-        // one posibility would be to produce an ouput and attempt to parse it again with validation
-        // turned on. otherwise will have to check the document elements by hand.
-    }
+    // protected void validateFeed(final Document document) throws FeedException {
+    //     // TBD here we have to validate the Feed against a schema or whatever not sure how to do it
+    //     // one posibility would be to produce an ouput and attempt to parse it again with validation
+    //     // turned on. otherwise will have to check the document elements by hand.
+    // }
 
     protected WireFeed parseFeed(final Element eFeed, final Locale locale) throws FeedException {
 
