@@ -1,6 +1,5 @@
 package com.rometools.rome.io.impl;
 
-import java.io.StringReader;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
@@ -9,7 +8,6 @@ import org.jdom2.Attribute;
 import org.jdom2.Document;
 import org.jdom2.Element;
 import org.jdom2.Namespace;
-import org.jdom2.input.SAXBuilder;
 
 import com.rometools.rome.feed.WireFeed;
 import com.rometools.rome.feed.atom.Content;
@@ -19,7 +17,6 @@ import com.rometools.rome.feed.atom.Generator;
 import com.rometools.rome.feed.atom.Link;
 import com.rometools.rome.feed.synd.SyndPerson;
 import com.rometools.rome.io.FeedException;
-import com.rometools.utils.Lists;
 
 public abstract class AtomGenerator extends BaseWireFeedGenerator {
 

@@ -31,12 +31,10 @@ import org.jdom2.Namespace;
 import org.jdom2.input.SAXBuilder;
 import org.jdom2.output.XMLOutputter;
 
-import com.rometools.rome.feed.WireFeed;
 import com.rometools.rome.feed.atom.Category;
 import com.rometools.rome.feed.atom.Content;
 import com.rometools.rome.feed.atom.Entry;
 import com.rometools.rome.feed.atom.Feed;
-import com.rometools.rome.feed.atom.Generator;
 import com.rometools.rome.feed.atom.Link;
 import com.rometools.rome.feed.synd.SyndPerson;
 import com.rometools.rome.io.FeedException;
@@ -60,42 +58,12 @@ public class Atom10Generator extends AtomGenerator {
 
     protected Atom10Generator(final String type, final String version) {
         super(type, version);
-        // this.version = version;
     }
-
-    // protected String version() {
-    //     return version;
-    // }
 
     @Override
     protected Namespace feedNamespace() {
         return ATOM_NS;
     }
-
-    // @Override
-    // public Document generate(final WireFeed wFeed) throws FeedException {
-    //     final Feed feed = (Feed) wFeed;
-    //     final Element root = createRootElement(feed);
-    //     populateFeed(feed, root);
-    //     purgeUnusedNamespaceDeclarations(root);
-    //     return createDocument(root);
-    // }
-
-    // protected Document createDocument(final Element root) {
-    //     return new Document(root);
-    // }
-
-    // protected Element createRootElement(final Feed feed) {
-    //     final Element root = new Element("feed", feedNamespace());
-    //     root.addNamespaceDeclaration(feedNamespace());
-    //     final String xmlBase = feed.getXmlBase();
-    //     if (xmlBase != null) {
-    //         root.setAttribute("base", xmlBase, Namespace.XML_NAMESPACE);
-    //     }
-    //     generateModuleNamespaceDefs(root);
-    //     return root;
-
-    // }
 
     protected void createRootElementHelper(final Feed feed, final Element root) {
         final String xmlBase = feed.getXmlBase();
@@ -116,18 +84,8 @@ public class Atom10Generator extends AtomGenerator {
         generateFeedModules(feed.getModules(), eFeed);
     }
 
-    // protected void addEntries(final Feed feed, final Element parent) throws FeedException {
-    //     final List<Entry> items = feed.getEntries();
-    //     for (final Entry entry : items) {
-    //         addEntry(entry, parent);
-    //     }
-    //     checkEntriesConstraints(parent);
-    // }
-
     @Override
     protected void addEntryHelper(final Entry entry, final Element eEntry) throws FeedException {
-
-        // final Element eEntry = new Element("entry", feedNamespace());
 
         final String xmlBase = entry.getXmlBase();
         if (xmlBase != null) {
@@ -136,10 +94,6 @@ public class Atom10Generator extends AtomGenerator {
 
         populateEntry(entry, eEntry);
         generateForeignMarkup(eEntry, entry.getForeignMarkup());
-        // checkEntryConstraints(eEntry);
-        // generateItemModules(entry.getModules(), eEntry);
-        // parent.addContent(eEntry);
-
     }
 
     @Override
@@ -338,24 +292,7 @@ public class Atom10Generator extends AtomGenerator {
 
     @Override
     protected void fillPersonElementHelper(final Element element, final SyndPerson person) {
-
-        // final String name = person.getName();
-        // if (name != null) {
-        //     element.addContent(generateSimpleElement("name", name));
-        // }
-
-        // final String uri = person.getUri();
-        // if (uri != null) {
-        //     element.addContent(generateSimpleElement("uri", uri));
-        // }
-
-        // final String email = person.getEmail();
-        // if (email != null) {
-        //     element.addContent(generateSimpleElement("email", email));
-        // }
-
         generatePersonModules(person.getModules(), element);
-
     }
 
     protected Element generateTagLineElement(final Content tagline) {

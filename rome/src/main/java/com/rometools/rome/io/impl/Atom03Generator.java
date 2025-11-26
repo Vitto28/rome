@@ -27,11 +27,9 @@ import org.jdom2.Element;
 import org.jdom2.Namespace;
 import org.jdom2.input.SAXBuilder;
 
-import com.rometools.rome.feed.WireFeed;
 import com.rometools.rome.feed.atom.Content;
 import com.rometools.rome.feed.atom.Entry;
 import com.rometools.rome.feed.atom.Feed;
-import com.rometools.rome.feed.atom.Generator;
 import com.rometools.rome.feed.atom.Link;
 import com.rometools.rome.feed.synd.SyndPerson;
 import com.rometools.rome.io.FeedException;
@@ -200,22 +198,6 @@ public class Atom03Generator extends AtomGenerator {
     @Override
     protected void fillPersonElementHelper(final Element element, final SyndPerson person) {
         // Atom03 generator adds no additional functionality
-
-        // final String name = person.getName();
-        // if (name != null) {
-        //     element.addContent(generateSimpleElement("name", name));
-        // }
-
-        // final String uri = person.getUri();
-        // if (uri != null) {
-        //     element.addContent(generateSimpleElement("url", uri));
-        // }
-
-        // final String email = person.getEmail();
-        // if (email != null) {
-        //     element.addContent(generateSimpleElement("email", email));
-        // }
-
     }
 
     protected Element generateTagLineElement(final Content tagline) {
