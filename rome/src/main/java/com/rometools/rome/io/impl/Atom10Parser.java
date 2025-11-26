@@ -50,7 +50,6 @@ import com.rometools.utils.Lists;
 /**
  * Parser for Atom 1.0
  */
-// public class Atom10Parser extends BaseWireFeedParser {
 public class Atom10Parser extends AtomParser {
 
     private static final String ATOM_10_URI = "http://www.w3.org/2005/Atom";
@@ -197,20 +196,8 @@ public class Atom10Parser extends AtomParser {
 
     }
 
-    private Link parseLink(final Feed feed, final Entry entry, final String baseURI, final Element eLink) {
-
-        final Link link = new Link();
-
-        final String rel = getAttributeValue(eLink, "rel");
-        if (rel != null) {
-            link.setRel(rel);
-        }
-
-        final String type = getAttributeValue(eLink, "type");
-        if (type != null) {
-            link.setType(type);
-        }
-
+    @Override
+    protected void setAttributes(final Element eLink, final Link link, final String baseURI) {
         final String href = getAttributeValue(eLink, "href");
         if (href != null) {
             link.setHref(href);
@@ -236,9 +223,6 @@ public class Atom10Parser extends AtomParser {
                 link.setLength(val.longValue());
             }
         }
-
-        return link;
-
     }
 
     // List(Elements) -> List(Link)
@@ -246,7 +230,7 @@ public class Atom10Parser extends AtomParser {
 
         final List<Link> links = new ArrayList<Link>();
         for (final Element eLink : eLinks) {
-            final Link link = parseLink(feed, entry, baseURI, eLink);
+            final Link link = parseLink(eLink, baseURI);
             if (link.getRel() == null || "".equals(link.getRel().trim()) || "alternate".equals(link.getRel())) {
                 links.add(link);
             }
@@ -260,7 +244,7 @@ public class Atom10Parser extends AtomParser {
 
         final List<Link> links = new ArrayList<Link>();
         for (final Element eLink : eLinks) {
-            final Link link = parseLink(feed, entry, baseURI, eLink);
+            final Link link = parseLink(eLink, baseURI);
             if (!"alternate".equals(link.getRel())) {
                 links.add(link);
             }

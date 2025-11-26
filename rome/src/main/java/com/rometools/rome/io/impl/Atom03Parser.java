@@ -35,7 +35,6 @@ import com.rometools.rome.feed.atom.Person;
 import com.rometools.rome.feed.synd.SyndPerson;
 import com.rometools.utils.Lists;
 
-// public class Atom03Parser extends BaseWireFeedParser {
 public class Atom03Parser extends AtomParser {
 
     private static final String ATOM_03_URI = "http://purl.org/atom/ns#";
@@ -141,27 +140,9 @@ public class Atom03Parser extends AtomParser {
 
     }
 
-    private Link parseLink(final Element eLink) {
-
-        final Link link = new Link();
-
-        final String rel = getAttributeValue(eLink, "rel");
-        if (rel != null) {
-            link.setRel(rel);
-        }
-
-        final String type = getAttributeValue(eLink, "type");
-        if (type != null) {
-            link.setType(type);
-        }
-
-        final String href = getAttributeValue(eLink, "href");
-        if (href != null) {
-            link.setHref(href);
-        }
-
-        return link;
-
+    @Override
+    protected void setAttributes(final Element eLink, final Link link, final String baseURI) {
+        // Atom 0.3 does not have any special attributes to set
     }
 
     private List<Link> parseLinks(final List<Element> eLinks, final boolean alternate) {
@@ -172,11 +153,11 @@ public class Atom03Parser extends AtomParser {
             final String rel = getAttributeValue(eLink, "rel");
             if (alternate) {
                 if ("alternate".equals(rel)) {
-                    links.add(parseLink(eLink));
+                    links.add(parseLink(eLink, null));
                 }
             } else {
                 if (!"alternate".equals(rel)) {
-                    links.add(parseLink(eLink));
+                    links.add(parseLink(eLink, null));
                 }
             }
         }

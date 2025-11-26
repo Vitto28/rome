@@ -2,6 +2,7 @@ package com.rometools.rome.io.impl;
 
 import java.util.Locale;
 
+import com.rometools.rome.feed.atom.Link;
 import org.jdom2.Document;
 import org.jdom2.Element;
 import org.jdom2.Namespace;
@@ -39,4 +40,34 @@ public abstract class AtomParser extends BaseWireFeedParser {
     protected abstract Namespace getAtomNamespace();
 
     protected abstract WireFeed parseFeed(Element eFeed, Locale locale) throws FeedException;
+
+    protected final Link parseLink(final Element eLink, final String baseURI) {
+        final Link link = new Link();
+
+        setbaseAttributes(eLink, link);
+        setAttributes(eLink, link, baseURI);
+
+        return link;
+    }
+
+    // sets rel, type, and href
+    protected final void setbaseAttributes(final Element eLink, final Link link) {
+        final String rel = getAttributeValue(eLink, "rel");
+        if (rel != null) {
+            link.setRel(rel);
+        }
+
+        final String type = getAttributeValue(eLink, "type");
+        if (type != null) {
+            link.setType(type);
+        }
+
+        final String href = getAttributeValue(eLink, "href");
+        if (href != null) {
+            link.setHref(href);
+        }
+    }
+
+    // the Atom03 and Atom10 parsers should override this
+    protected abstract void setAttributes(final Element eLink, final Link link, final String baseURI);
 }
